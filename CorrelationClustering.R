@@ -312,6 +312,45 @@ cc_out3 = CorrelationCluster(1:nrow(signed_adj_matrix), signed_adj_matrix)
 
 cc_out3
 
+
+#########################Cluster merging proposal################################
+
+#sort clusters in ascending order
+length_list = sapply(cc_out3, length)
+length_list = sort.list(length_list)
+sorted_clusters = cc_out3[length_list]
+small = 1:13
+out_clusters = sorted_clusters
+#for each cluster below the threshold, examine all outgoing edges to identify a cluster with a net positive
+for(source in sorted_clusters[small])
+{
+  counts = vector()
+  for(dest in sorted_clusters[-small])
+  {
+    count = 0
+    for(i in source)
+    {
+      for(j in dest)
+      {
+        if(signed_adj_matrix[i,j] > 0)
+        {
+          count = count + 1
+        }
+        else
+        {
+          count = count - 1
+        }
+      }
+    }
+    counts = c(counts, count)
+  }
+  max_count = max(counts)
+  #currently only prints out the maximum net score in outgoing edges
+  print(max_count)
+}
+
+#in my test, no examples of positive scores.
+
 ###################Application 4: Principal Component Similarity################
 
 #get principal components, compute mean distance for each
@@ -423,4 +462,38 @@ plot(KarateClub)
 V(KarateClub)$color = colbar[cc_membership]
 plot(KarateClub)
 
+#########################Cluster merging proposal################################
 
+#sort clusters in ascending order
+length_list = sapply(cc_out3, length)
+length_list = sort.list(length_list)
+sorted_clusters = cc_out3[length_list]
+small = 1:13
+out_clusters = sorted_clusters
+#for each cluster below the threshold, examine all outgoing edges to identify a cluster with a net positive
+for(source in sorted_clusters[small])
+{
+  counts = vector()
+  for(dest in sorted_clusters[-small])
+  {
+    count = 0
+    for(i in source)
+    {
+      for(j in dest)
+      {
+        if(signed_adj_matrix[i,j] > 0)
+        {
+          count = count + 1
+        }
+        else
+        {
+          count = count - 1
+        }
+      }
+    }
+    counts = c(counts, count)
+  }
+  max_count = max(counts)
+  #currently only prints out the maximum net score in outgoing edges
+  print(max_count)
+}
